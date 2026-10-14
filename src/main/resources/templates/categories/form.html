@@ -1,0 +1,7 @@
+<!doctype html><html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
+<head th:replace="~{fragments/layout :: head(${categoryId == null ? 'category.create' : 'category.edit'})}"></head><body><nav th:replace="~{fragments/layout :: nav}"></nav><main class="container form-page">
+  <header class="page-heading"><h1 th:text="${categoryId == null} ? #{category.create} : #{category.edit}"></h1></header>
+  <form class="editor-panel" method="post" th:action="${categoryId == null} ? @{/categories} : @{/categories/{id}(id=${categoryId})}" th:object="${categoryForm}" novalidate>
+    <div class="mb-3"><label for="name" th:text="#{category.name}"></label><input id="name" class="form-control" th:field="*{name}" maxlength="100" required aria-describedby="name-error"><div id="name-error" class="field-error" th:errors="*{name}"></div></div><div class="mb-4"><label for="description" th:text="#{dish.description}"></label><textarea id="description" class="form-control" th:field="*{description}" rows="4" maxlength="2000" aria-describedby="description-error"></textarea><div id="description-error" class="field-error" th:errors="*{description}"></div></div><div class="row-actions"><button class="btn btn-primary" th:text="#{action.save}"></button><a class="btn btn-outline-secondary" th:href="@{/categories}" th:text="#{action.cancel}"></a></div>
+  </form>
+</main><footer th:replace="~{fragments/layout :: footer}"></footer></body></html>

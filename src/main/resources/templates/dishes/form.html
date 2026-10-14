@@ -1,0 +1,18 @@
+<!doctype html><html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
+<head th:replace="~{fragments/layout :: head(${dishId == null ? 'dish.create' : 'dish.edit'})}"></head>
+<body><nav th:replace="~{fragments/layout :: nav}"></nav>
+<main class="container form-page">
+  <header class="page-heading"><h1 th:text="${dishId == null} ? #{dish.create} : #{dish.edit}"></h1></header>
+  <div class="alert alert-warning" th:if="${#lists.isEmpty(categories)}"><span th:text="#{dish.category.first}"></span> <a th:href="@{/categories/new}" th:text="#{category.create}"></a></div>
+  <form class="editor-panel" method="post" th:action="${dishId == null} ? @{/dishes} : @{/dishes/{id}(id=${dishId})}" th:object="${dishForm}" novalidate>
+    <div class="mb-3"><label for="name" th:text="#{dish.name}"></label><input id="name" class="form-control" th:field="*{name}" maxlength="120" required aria-describedby="name-error"><div class="field-error" id="name-error" th:errors="*{name}"></div></div>
+    <div class="form-grid">
+      <div class="mb-3"><label for="price" th:text="#{dish.price}"></label><input id="price" class="form-control" th:field="*{price}" type="number" min="0.01" step="0.01" required aria-describedby="price-error"><div class="field-error" id="price-error" th:errors="*{price}"></div></div>
+      <div class="mb-3"><label for="preparationTime" th:text="#{dish.time}"></label><input id="preparationTime" class="form-control" th:field="*{preparationTime}" type="number" min="1" required aria-describedby="time-error"><div class="field-error" id="time-error" th:errors="*{preparationTime}"></div></div>
+    </div>
+    <div class="mb-3"><label for="categoryId" th:text="#{dish.category}"></label><select id="categoryId" class="form-select" th:field="*{categoryId}" required aria-describedby="category-error"><option value="" th:text="#{dish.category.select}"></option><option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option></select><div class="field-error" id="category-error" th:errors="*{categoryId}"></div></div>
+    <div class="mb-3"><label for="description" th:text="#{dish.description}"></label><textarea id="description" class="form-control" th:field="*{description}" rows="4" maxlength="2000" aria-describedby="description-error"></textarea><div class="field-error" id="description-error" th:errors="*{description}"></div></div>
+    <div class="form-check mb-4"><input id="available" class="form-check-input" type="checkbox" th:field="*{available}"><label class="form-check-label" for="available" th:text="#{status.available}"></label></div>
+    <div class="row-actions"><button class="btn btn-primary" th:disabled="${#lists.isEmpty(categories)}" th:text="#{action.save}"></button><a class="btn btn-outline-secondary" th:href="@{/dishes}" th:text="#{action.cancel}"></a></div>
+  </form>
+</main><footer th:replace="~{fragments/layout :: footer}"></footer></body></html>

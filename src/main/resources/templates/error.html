@@ -1,0 +1,4 @@
+<!doctype html><html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
+<head th:replace="~{fragments/layout :: head('error.title')}"></head><body><nav th:replace="~{fragments/layout :: nav}"></nav>
+<main class="container error-page"><h1 th:text="#{error.title}"></h1><p role="alert" th:text="#{__${errorKey ?: 'error.unexpected'}__}"></p><a class="btn btn-primary" th:href="@{/dishes}" th:text="#{action.back}"></a></main><footer th:replace="~{fragments/layout :: footer}"></footer>
+</body></html>

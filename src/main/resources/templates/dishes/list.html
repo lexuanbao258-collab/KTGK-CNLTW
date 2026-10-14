@@ -1,0 +1,34 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
+<head th:replace="~{fragments/layout :: head('dish.list.title')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<main class="container">
+  <header class="page-heading"><div><h1 th:text="#{dish.list.title}">Dishes</h1><p th:text="#{dish.list.subtitle}">Manage your kitchen menu.</p></div><a class="btn btn-primary" th:href="@{/dishes/new}" th:text="#{dish.create}">Add dish</a></header>
+  <div th:replace="~{fragments/layout :: flash}"></div>
+  <form class="filter-panel" method="get" th:action="@{/dishes}" th:object="${filter}">
+    <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert"><p th:each="error : ${#fields.errors('*')}" th:text="${error}"></p></div>
+    <div class="filter-grid">
+      <div><label for="name" th:text="#{filter.name}">Dish name</label><input class="form-control" id="name" th:field="*{name}" th:placeholder="#{filter.name.placeholder}" maxlength="120"></div>
+      <div><label for="categoryId" th:text="#{dish.category}">Category</label><select class="form-select" id="categoryId" th:field="*{categoryId}"><option value="" th:text="#{filter.all.categories}"></option><option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option></select></div>
+      <div><label for="available" th:text="#{dish.status}">Status</label><select class="form-select" id="available" th:field="*{available}"><option value="" th:text="#{filter.all.status}"></option><option value="true" th:text="#{status.available}"></option><option value="false" th:text="#{status.unavailable}"></option></select></div>
+      <div><label for="minPrice" th:text="#{filter.min}"></label><input class="form-control" id="minPrice" th:field="*{minPrice}" type="number" min="0" step="0.01"></div>
+      <div><label for="maxPrice" th:text="#{filter.max}"></label><input class="form-control" id="maxPrice" th:field="*{maxPrice}" type="number" min="0" step="0.01"></div>
+      <div><label for="sort" th:text="#{filter.sort}"></label><select class="form-select" id="sort" th:field="*{sort}"><option value="name" th:text="#{sort.name}"></option><option value="priceAsc" th:text="#{sort.price.asc}"></option><option value="priceDesc" th:text="#{sort.price.desc}"></option><option value="timeAsc" th:text="#{sort.time.asc}"></option></select></div>
+    </div>
+    <div class="filter-actions"><button class="btn btn-primary" th:text="#{filter.apply}"></button><a class="btn btn-outline-secondary" th:href="@{/dishes}" th:text="#{filter.reset}"></a></div>
+  </form>
+  <section th:object="${filter}" class="table-panel" th:attr="aria-label=#{dish.list.title}">
+    <div class="table-responsive"><table class="table align-middle"><thead><tr><th scope="col" th:text="#{dish.name}"></th><th scope="col" th:text="#{dish.category}"></th><th scope="col" th:text="#{dish.price}"></th><th scope="col" th:text="#{dish.time}"></th><th scope="col" th:text="#{dish.status}"></th><th scope="col" th:text="#{action.title}"></th></tr></thead>
+      <tbody><tr th:each="dish : ${dishes}">
+        <td><a class="dish-link" th:href="@{/dishes/{id}(id=${dish.id})}" th:text="${dish.name}"></a></td>
+        <td th:text="${dish.category.name}"></td>
+        <td class="price"><span th:text="${#numbers.formatDecimal(dish.price, 1, 'COMMA', 2, 'POINT')}"></span> VND</td>
+        <td><span th:text="${dish.preparationTime}"></span> <span th:text="#{unit.minute}"></span><span class="time-tag" th:text="${dish.quick} ? #{time.quick} : #{time.regular}"></span></td>
+        <td><span class="status" th:classappend="${dish.available} ? 'selling' : 'stopped'" th:text="${dish.available} ? #{status.available} : #{status.unavailable}"></span></td>
+        <td><div class="row-actions"><a class="btn btn-sm btn-outline-secondary" th:href="@{/dishes/{id}(id=${dish.id})}" th:text="#{action.detail}"></a><a class="btn btn-sm btn-outline-secondary" th:href="@{/dishes/{id}/edit(id=${dish.id})}" th:text="#{action.edit}"></a><form method="post" th:action="@{/dishes/{id}/delete(id=${dish.id})}" th:attr="data-confirm=#{confirm.dish.delete}"><button class="btn btn-sm btn-outline-danger" th:text="#{action.delete}"></button></form></div></td>
+      </tr></tbody></table></div>
+    <p class="empty-state" th:if="${#lists.isEmpty(dishes) and !#fields.hasErrors('*')}" th:text="#{dish.empty}" th:object="${filter}"></p>
+  </section>
+</main><footer th:replace="~{fragments/layout :: footer}"></footer>
+</body></html>
